@@ -14,16 +14,17 @@ from conans.model.version import Version
 
 class AbseilConan(ConanFile):
     name = "abseil"
-    url = "https://github.com/abseil/abseil-cpp"
-    homepage = url
-    author = "Abseil <abseil-io@googlegroups.com>"
+    version = "20200225.2"
     description = "Abseil Common Libraries (C++) from Google"
+    homepage = "https://github.com/abseil/abseil-cpp"
+    url = "https://github.com/0x8000-0000/conan-recipes/"
     license = "Apache-2.0"
+    author = "Florin Iucha <florin@signbit.net>"
     topics = ("conan", "abseil", "abseil-cpp", "google", "common-libraries")
+    settings = "os", "compiler", "build_type", "arch"
     exports = ["LICENSE"]
     exports_sources = ["CMakeLists.txt", "CMake/*", "absl/*"]
     generators = "cmake"
-    settings = "os", "arch", "compiler", "build_type"
 
     @property
     def _source_subfolder(self):
@@ -34,10 +35,12 @@ class AbseilConan(ConanFile):
         return "build_subfolder"
 
     def configure(self):
-        if self.settings.os == "Windows" and \
-           self.settings.compiler == "Visual Studio" and \
-           Version(self.settings.compiler.version.value) < "14":
-              raise ConanInvalidConfiguration("Abseil does not support MSVC < 14")
+        if (
+            self.settings.os == "Windows"
+            and self.settings.compiler == "Visual Studio"
+            and Version(self.settings.compiler.version.value) < "14"
+        ):
+            raise ConanInvalidConfiguration("Abseil does not support MSVC < 14")
 
     def source(self):
         tools.get(**self.conan_data["sources"][self.version])
@@ -111,7 +114,7 @@ class AbseilConan(ConanFile):
             "absl_random_internal_randen_hwaes_impl",
             "absl_leak_check",
             "absl_leak_check_disable",
-            "absl_int128"
+            "absl_int128",
         ]
         if self.settings.os == "Linux":
             self.cpp_info.system_libs.append("pthread")

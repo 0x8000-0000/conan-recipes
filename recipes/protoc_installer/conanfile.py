@@ -4,13 +4,21 @@ from conans import ConanFile, CMake, tools
 
 class ProtocInstaller(ConanFile):
     name = "protoc_installer"
-    description = "Protocol Buffers - Google's data interchange format"
-    topics = ("conan", "protobuf", "protocol-buffers",
-              "protocol-compiler", "serialization", "rpc", "protocol-compiler")
-    url = "https://github.com/conan-io/conan-center-index"
-    homepage = "https://github.com/protocolbuffers/protobuf"
-    license = "BSD-3-Clause"
     version = "3.11.4"
+    description = "Protocol Buffers - Google's data interchange format"
+    homepage = "https://github.com/protocolbuffers/protobuf"
+    url = "https://github.com/0x8000-0000/conan-recipes/"
+    license = "BSD-3-Clause"
+    author = "Florin Iucha <florin@signbit.net>"
+    topics = (
+        "conan",
+        "protobuf",
+        "protocol-buffers",
+        "protocol-compiler",
+        "serialization",
+        "rpc",
+        "protocol-compiler",
+    )
     settings = "os_build", "arch_build", "compiler", "arch"
     exports_sources = ["CMakeLists.txt", "patches/**"]
     generators = "cmake"
@@ -33,7 +41,7 @@ class ProtocInstaller(ConanFile):
         os.rename(extracted_dir, self._source_subfolder)
 
     def build(self):
-        #tools.patch(base_path=self._source_subfolder, patch_file="protoc.patch")
+        # tools.patch(base_path=self._source_subfolder, patch_file="protoc.patch")
         cmake = self._configure_cmake()
         cmake.build()
 
@@ -42,10 +50,11 @@ class ProtocInstaller(ConanFile):
         cmake.definitions["protobuf_BUILD_TESTS"] = "OFF"
         cmake.definitions["protobuf_WITH_ZLIB"] = "ON"
         if self.settings.compiler == "Visual Studio":
-            cmake.definitions["protobuf_MSVC_STATIC_RUNTIME"] = "MT" in self.settings.compiler.runtime
+            cmake.definitions["protobuf_MSVC_STATIC_RUNTIME"] = (
+                "MT" in self.settings.compiler.runtime
+            )
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
-
 
     def package(self):
         self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
@@ -63,5 +72,6 @@ class ProtocInstaller(ConanFile):
         self.env_info.PATH.append(bindir)
 
         protoc = "protoc.exe" if self.settings.os_build == "Windows" else "protoc"
-        self.env_info.PROTOC_BIN = os.path.normpath(os.path.join(self.package_folder, "bin", protoc))
-
+        self.env_info.PROTOC_BIN = os.path.normpath(
+            os.path.join(self.package_folder, "bin", protoc)
+        )

@@ -1,14 +1,16 @@
 import os
 from conans import ConanFile, CMake, tools
 
+
 class GrpcConan(ConanFile):
     name = "grpc"
-    license = "BSD"
     version = "1.28.1"
-    url = "https://github.com/0x8000-0000/grpc"
-    homepage = "https://grpc.io"
-    topics = ("conan", "grpc", "rpc")
     description = "The C based gRPC (C++, Python, Ruby, Objective-C, PHP, C#)"
+    homepage = "https://grpc.io"
+    url = "https://github.com/0x8000-0000/conan-recipes/"
+    license = "Apache-2.0"
+    author = "Florin Iucha <florin@signbit.net>"
+    topics = ("conan", "grpc", "rpc")
     settings = "os", "compiler", "build_type", "arch"
     exports_sources = ["CMakeLists.txt", "patches/**"]
     generators = "cmake"
@@ -48,12 +50,12 @@ class GrpcConan(ConanFile):
     def _configure_cmake(self):
         cmake = CMake(self)
 
-        cmake.definitions['gRPC_BUILD_CODEGEN'] = "ON"
-        cmake.definitions['gRPC_BUILD_CSHARP_EXT'] = "OFF"
-        cmake.definitions['gRPC_BUILD_TESTS'] = "OFF"
-        cmake.definitions['gRPC_INSTALL'] = "ON"
-        cmake.definitions['gRPC_INSTALL'] = "ON"
-        cmake.definitions['gRPC_USE_PROTO_LITE'] = "OFF"
+        cmake.definitions["gRPC_BUILD_CODEGEN"] = "ON"
+        cmake.definitions["gRPC_BUILD_CSHARP_EXT"] = "OFF"
+        cmake.definitions["gRPC_BUILD_TESTS"] = "OFF"
+        cmake.definitions["gRPC_INSTALL"] = "ON"
+        cmake.definitions["gRPC_INSTALL"] = "ON"
+        cmake.definitions["gRPC_USE_PROTO_LITE"] = "OFF"
 
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
@@ -63,8 +65,13 @@ class GrpcConan(ConanFile):
         cmake.install()
 
         self.copy(pattern="LICENSE", dst="licenses")
-        self.copy('*', dst='include', src='{}/include'.format(self._source_subfolder))
-        self.copy('*.cmake', dst='lib', src='{}/lib'.format(self._build_subfolder), keep_path=True)
+        self.copy("*", dst="include", src="{}/include".format(self._source_subfolder))
+        self.copy(
+            "*.cmake",
+            dst="lib",
+            src="{}/lib".format(self._build_subfolder),
+            keep_path=True,
+        )
         self.copy("*.lib", dst="lib", src="", keep_path=False)
         self.copy("*.a", dst="lib", src="", keep_path=False)
         self.copy("*", dst="bin", src="bin")
