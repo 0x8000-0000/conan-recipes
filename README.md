@@ -16,12 +16,14 @@ Conan 1.24.1 installed via pip3.
 Building
 --------
 
+   ```shell
    $ cd recipes/abseil
    $ conan create . abseil/20200225.2@signbit/testing
    $ cd ../protoc\_installer
    $ conan create . protoc\_installer/3.11.4@signbit/testing
    $ cd ../grpc
    $ conan create . grpc/1.28.1@signbit/testing
+   ```
 
 Feel free to substitute your own channel for "signbit/testing", just make
 sure you adapt the test recipes.
