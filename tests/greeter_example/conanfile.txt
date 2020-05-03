@@ -1,0 +1,6 @@
+[requires]
+protoc_installer/3.11.4@signbit/testing
+grpc/1.28.1@signbit/testing
+
+[generators]
+cmake

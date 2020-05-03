@@ -1,0 +1,8 @@
+sources:
+  "1.28.1":
+    url: "https://github.com/grpc/grpc/archive/v1.28.1.zip"
+    sha256: "b0d3b876d85e4e4375aa211a52a33b7e8ca9f9d6d97a60c3c844070a700f0ea3"
+patches:
+  "1.28.1":
+    - patch_file: "patches/conanize-cmakelists.patch"
+      base_path: "source_subfolder"

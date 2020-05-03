@@ -1,0 +1,276 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -188,15 +188,8 @@
+   set(_gRPC_CORE_NOSTDCXX_FLAGS "")
+ endif()
+ 
+-include(cmake/abseil-cpp.cmake)
+ include(cmake/address_sorting.cmake)
+-include(cmake/benchmark.cmake)
+-include(cmake/cares.cmake)
+-include(cmake/gflags.cmake)
+-include(cmake/protobuf.cmake)
+-include(cmake/ssl.cmake)
+ include(cmake/upb.cmake)
+-include(cmake/zlib.cmake)
+ 
+ if(NOT MSVC)
+   set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -std=c99")
+@@ -236,7 +229,7 @@
+     return()
+   endif()
+ 
+-  set(_protobuf_include_path -I . -I ${_gRPC_PROTOBUF_WELLKNOWN_INCLUDE_DIR})
++  set(_protobuf_include_path -I . -I ${CONAN_INCLUDE_DIRS_PROTOBUF})
+   foreach(FIL ${ARGN})
+     get_filename_component(ABS_FIL ${FIL} ABSOLUTE)
+     get_filename_component(FIL_WE ${FIL} NAME_WE)
+@@ -257,7 +250,7 @@
+              "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}_mock.grpc.pb.h"
+              "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}.pb.cc"
+              "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}.pb.h"
+-      COMMAND ${_gRPC_PROTOBUF_PROTOC_EXECUTABLE}
++      COMMAND protoc
+       ARGS --grpc_out=generate_mock_code=true:${_gRPC_PROTO_GENS_DIR}
+            --cpp_out=${_gRPC_PROTO_GENS_DIR}
+            --plugin=protoc-gen-grpc=${_gRPC_CPP_PLUGIN}
+@@ -1442,11 +1435,7 @@
+ )
+ target_link_libraries(gpr
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+-  absl::inlined_vector
+-  absl::memory
+-  absl::str_format
+-  absl::strings
+-  absl::optional
++  CONAN_PKG::absl
+ )
+ if(_gRPC_PLATFORM_ANDROID)
+   target_link_libraries(gpr
+@@ -1929,17 +1918,15 @@
+   PRIVATE
+     ${CMAKE_CURRENT_SOURCE_DIR}
+     ${_gRPC_ADDRESS_SORTING_INCLUDE_DIR}
+-    ${_gRPC_SSL_INCLUDE_DIR}
+     ${_gRPC_UPB_GENERATED_DIR}
+     ${_gRPC_UPB_GRPC_GENERATED_DIR}
+     ${_gRPC_UPB_INCLUDE_DIR}
+-    ${_gRPC_ZLIB_INCLUDE_DIR}
+ )
+ target_link_libraries(grpc
+   ${_gRPC_BASELIB_LIBRARIES}
+-  ${_gRPC_SSL_LIBRARIES}
+-  ${_gRPC_ZLIB_LIBRARIES}
+-  ${_gRPC_CARES_LIBRARIES}
++  CONAN_PKG::openssl
++  CONAN_PKG::zlib
++  CONAN_PKG::c-ares
+   ${_gRPC_ADDRESS_SORTING_LIBRARIES}
+   ${_gRPC_UPB_LIBRARIES}
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+@@ -2341,17 +2330,15 @@
+   PRIVATE
+     ${CMAKE_CURRENT_SOURCE_DIR}
+     ${_gRPC_ADDRESS_SORTING_INCLUDE_DIR}
+-    ${_gRPC_SSL_INCLUDE_DIR}
+     ${_gRPC_UPB_GENERATED_DIR}
+     ${_gRPC_UPB_GRPC_GENERATED_DIR}
+     ${_gRPC_UPB_INCLUDE_DIR}
+-    ${_gRPC_ZLIB_INCLUDE_DIR}
+ )
+ target_link_libraries(grpc_cronet
+   ${_gRPC_BASELIB_LIBRARIES}
+-  ${_gRPC_SSL_LIBRARIES}
+-  ${_gRPC_ZLIB_LIBRARIES}
+-  ${_gRPC_CARES_LIBRARIES}
++  CONAN_PKG::openssl
++  CONAN_PKG::zlib
++  CONAN_PKG::c-ares
+   ${_gRPC_ADDRESS_SORTING_LIBRARIES}
+   ${_gRPC_UPB_LIBRARIES}
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+@@ -3449,16 +3434,14 @@
+   PRIVATE
+     ${CMAKE_CURRENT_SOURCE_DIR}
+     ${_gRPC_ADDRESS_SORTING_INCLUDE_DIR}
+-    ${_gRPC_SSL_INCLUDE_DIR}
+     ${_gRPC_UPB_GENERATED_DIR}
+     ${_gRPC_UPB_GRPC_GENERATED_DIR}
+     ${_gRPC_UPB_INCLUDE_DIR}
+-    ${_gRPC_ZLIB_INCLUDE_DIR}
+ )
+ target_link_libraries(grpc_unsecure
+   ${_gRPC_BASELIB_LIBRARIES}
+-  ${_gRPC_ZLIB_LIBRARIES}
+-  ${_gRPC_CARES_LIBRARIES}
++  CONAN_PKG::c-ares
++  CONAN_PKG::zlib
+   ${_gRPC_ADDRESS_SORTING_LIBRARIES}
+   ${_gRPC_UPB_LIBRARIES}
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+@@ -3797,8 +3780,8 @@
+ )
+ target_link_libraries(grpc++
+   ${_gRPC_BASELIB_LIBRARIES}
+-  ${_gRPC_SSL_LIBRARIES}
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::openssl
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc
+   gpr
+@@ -4127,7 +4110,7 @@
+ )
+ target_link_libraries(grpc++_alts
+   ${_gRPC_BASELIB_LIBRARIES}
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++
+   gpr
+@@ -4199,10 +4182,10 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpc++_core_stats
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
++  CONAN_PKG::gflags
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++
+-  ${_gRPC_GFLAGS_LIBRARIES}
+ )
+ 
+ endif()
+@@ -4248,7 +4231,7 @@
+ )
+ target_link_libraries(grpc++_error_details
+   ${_gRPC_BASELIB_LIBRARIES}
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++
+ )
+@@ -4321,11 +4304,11 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpc++_proto_reflection_desc_db
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++
+   grpc
+-  ${_gRPC_GFLAGS_LIBRARIES}
++  CONAN_PKG::gflags
+ )
+ 
+ foreach(_hdr
+@@ -4381,7 +4364,7 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpc++_reflection
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++
+   grpc
+@@ -4450,9 +4433,9 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpc++_test_config
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+-  ${_gRPC_GFLAGS_LIBRARIES}
++  CONAN_PKG::gflags
+ )
+ 
+ 
+@@ -4530,12 +4513,12 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpc++_test_util
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++
+   grpc_test_util
+   grpc
+-  ${_gRPC_GFLAGS_LIBRARIES}
++  CONAN_PKG::gflags
+ )
+ 
+ foreach(_hdr
+@@ -4728,12 +4711,12 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpc++_test_util_unsecure
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++_unsecure
+   grpc_test_util_unsecure
+   grpc_unsecure
+-  ${_gRPC_GFLAGS_LIBRARIES}
++  CONAN_PKG::gflags
+ )
+ 
+ foreach(_hdr
+@@ -4934,7 +4917,7 @@
+ )
+ target_link_libraries(grpc++_unsecure
+   ${_gRPC_BASELIB_LIBRARIES}
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   gpr
+   grpc_unsecure
+@@ -5316,12 +5299,12 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpc_cli_libs
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++_proto_reflection_desc_db
+   grpc++
+   grpc
+-  ${_gRPC_GFLAGS_LIBRARIES}
++  CONAN_PKG::gflags
+ )
+ 
+ foreach(_hdr
+@@ -5378,7 +5361,7 @@
+ )
+ target_link_libraries(grpc_plugin_support
+   ${_gRPC_PROTOBUF_PROTOC_LIBRARIES}
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+ )
+ 
+@@ -5444,7 +5427,7 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(grpcpp_channelz
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++
+   grpc
+@@ -5525,14 +5508,14 @@
+     ${_gRPC_PROTO_GENS_DIR}
+ )
+ target_link_libraries(http2_client_main
+-  ${_gRPC_PROTOBUF_LIBRARIES}
++  CONAN_PKG::protobuf
+   ${_gRPC_ALLTARGETS_LIBRARIES}
+   grpc++_test_util
+   grpc_test_util
+   grpc++
+   grpc
+   grpc++_test_config
+-  ${_gRPC_GFLAGS_LIBRARIES}
++  CONAN_PKG::gflags
+ )
+ 
+ endif()

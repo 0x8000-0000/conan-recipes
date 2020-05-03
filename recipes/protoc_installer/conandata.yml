@@ -1,0 +1,8 @@
+sources:
+  3.11.4:
+    sha256: a79d19dcdf9139fa4b81206e318e33d245c4c9da1ffed21c87288ed4380426f9
+    url: https://github.com/protocolbuffers/protobuf/archive/v3.11.4.tar.gz
+patches:
+  3.11.4:
+    - patch_file: "patches/protobuf-3.11.4.patch"
+      base_path: "source_subfolder"
