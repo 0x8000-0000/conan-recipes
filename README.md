@@ -68,7 +68,7 @@ These scripts have been heavily influenced by the original upstream sources:
    * <https://github.com/bincrafters/conan-protoc_installer> licensed under MIT
    * <https://github.com/inexorgame/conan-grpc> licensed under MIT
 
-As such, this work is licensed under the [MIT license](blob/master/LICENSE.md).
+As such, this work is licensed under the [MIT license](LICENSE.md).
 
 NOTE: The Conan recipe license applies only to the files of this recipe,
 which can be used to build the included packages. It does not in any way
