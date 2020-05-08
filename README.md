@@ -20,7 +20,9 @@ Building
    $ cd recipes/abseil
    $ conan create . abseil/20200225.2@signbit/testing
    $ cd ../protoc_installer
-   $ conan create . protoc_installer/3.11.4@signbit/testing
+   $ conan create . protobuf_compiler/3.11.4@signbit/testing
+   $ cd ../grpc_plugin
+   $ conan create . grpc_plugin/1.28.1@signbit/testing
    $ cd ../grpc
    $ conan create . grpc/1.28.1@signbit/testing
    ```
