@@ -70,6 +70,11 @@ class GrpcConan(ConanFile):
         self.copy("grpc_python_plugin", dst="bin", src=binDir)
         self.copy("grpc_ruby_plugin", dst="bin", src=binDir)
 
+    def package_id(self):
+        del self.info.settings.compiler
+        del self.info.settings.arch
+        self.info.include_build_settings()
+
     def package_info(self):
         self.env_info.PATH.append(os.path.join(self.package_folder, "bin"))
         self.env_info.GRPC_CPP_PLUGIN_BIN = os.path.normpath(

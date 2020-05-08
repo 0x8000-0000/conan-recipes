@@ -23,6 +23,8 @@ project(HelloWorld C CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
+option (STATIC_BINARIES_ONLY "Build all binaries statically" OFF)
+
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
@@ -68,4 +70,9 @@ foreach(_target greeter_client greeter_server)
   target_link_libraries(${_target}
     CONAN_PKG::grpc
     CONAN_PKG::protobuf)
+
+  if (STATIC_BINARIES_ONLY)
+    target_link_options (${_target} PUBLIC -static)
+  endif ()
+
 endforeach()
