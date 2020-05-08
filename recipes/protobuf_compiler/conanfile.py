@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 
 class ProtocInstaller(ConanFile):
-    name = "protoc_installer"
+    name = "protobuf_compiler"
     version = "3.11.4"
     description = "Protocol Buffers - Google's data interchange format"
     homepage = "https://github.com/protocolbuffers/protobuf"
@@ -16,8 +16,6 @@ class ProtocInstaller(ConanFile):
         "protocol-buffers",
         "protocol-compiler",
         "serialization",
-        "rpc",
-        "protocol-compiler",
     )
     settings = "os_build", "arch_build", "compiler", "arch"
     exports_sources = ["CMakeLists.txt", "patches/**"]
@@ -58,8 +56,7 @@ class ProtocInstaller(ConanFile):
 
     def package(self):
         self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
-        cmake = self._configure_cmake()
-        cmake.install()
+        self.copy("protoc", dst="bin", src="{}/bin".format(self._build_subfolder))
 
     def package_id(self):
         del self.info.settings.compiler
