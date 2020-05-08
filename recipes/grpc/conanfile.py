@@ -13,6 +13,8 @@ class GrpcConan(ConanFile):
     topics = ("conan", "grpc", "rpc")
     settings = "os", "compiler", "build_type", "arch"
     exports_sources = ["CMakeLists.txt", "patches/**"]
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = {"shared": False, "fPIC": True}
     generators = "cmake"
 
     @property
