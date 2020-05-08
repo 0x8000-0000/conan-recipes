@@ -33,12 +33,8 @@ foreach (_variableName ${_variableNames})
        message(STATUS "${_variableName}=${${_variableName}}")
 endforeach()
 
-
-find_package(gRPC CONFIG REQUIRED)
-
-set(_PROTOBUF_PROTOC "${CONAN_BIN_DIRS_PROTOBUF_COMPILER}/protoc")
-set(_GRPC_CPP_PLUGIN_EXECUTABLE "${CONAN_BIN_DIRS_GRPC}/grpc_cpp_plugin")
-
+find_program(_PROTOBUF_PROTOC protoc)
+find_program(_GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin)
 
 find_package(Threads REQUIRED)
 
