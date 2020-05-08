@@ -16,25 +16,41 @@
  
  if(NOT MSVC)
    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -std=c99")
-@@ -236,7 +229,7 @@
+@@ -236,6 +229,10 @@
      return()
    endif()
  
--  set(_protobuf_include_path -I . -I ${_gRPC_PROTOBUF_WELLKNOWN_INCLUDE_DIR})
-+  set(_protobuf_include_path -I . -I ${CONAN_INCLUDE_DIRS_PROTOBUF})
++  find_program(_gRPC_PROTOBUF_PROTOC_EXECUTABLE protoc)
++  find_program(_gRPC_CPP_PLUGIN grpc_cpp_plugin)
++  set(_gRPC_PROTOBUF_WELLKNOWN_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_PROTOBUF})
++
+   set(_protobuf_include_path -I . -I ${_gRPC_PROTOBUF_WELLKNOWN_INCLUDE_DIR})
    foreach(FIL ${ARGN})
      get_filename_component(ABS_FIL ${FIL} ABSOLUTE)
-     get_filename_component(FIL_WE ${FIL} NAME_WE)
-@@ -257,7 +250,7 @@
-              "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}_mock.grpc.pb.h"
-              "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}.pb.cc"
-              "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}.pb.h"
--      COMMAND ${_gRPC_PROTOBUF_PROTOC_EXECUTABLE}
-+      COMMAND "${CONAN_BIN_DIRS_PROTOBUF_COMPILER}/protoc"
-       ARGS --grpc_out=generate_mock_code=true:${_gRPC_PROTO_GENS_DIR}
-            --cpp_out=${_gRPC_PROTO_GENS_DIR}
+@@ -244,13 +241,6 @@
+     get_filename_component(REL_DIR ${REL_FIL} DIRECTORY)
+     set(RELFIL_WE "${REL_DIR}/${FIL_WE}")
+ 
+-    #if cross-compiling, find host plugin
+-    if(CMAKE_CROSSCOMPILING)
+-      find_program(_gRPC_CPP_PLUGIN grpc_cpp_plugin)
+-    else()
+-      set(_gRPC_CPP_PLUGIN $<TARGET_FILE:grpc_cpp_plugin>)
+-    endif()
+-
+     add_custom_command(
+       OUTPUT "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}.grpc.pb.cc"
+              "${_gRPC_PROTO_GENS_DIR}/${RELFIL_WE}.grpc.pb.h"
+@@ -263,7 +253,7 @@
             --plugin=protoc-gen-grpc=${_gRPC_CPP_PLUGIN}
-@@ -1442,11 +1435,7 @@
+            ${_protobuf_include_path}
+            ${REL_FIL}
+-      DEPENDS ${ABS_FIL} ${_gRPC_PROTOBUF_PROTOC} grpc_cpp_plugin
++      DEPENDS ${ABS_FIL}
+       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+       COMMENT "Running gRPC C++ protocol buffer compiler on ${FIL}"
+       VERBATIM)
+@@ -1442,11 +1432,7 @@
  )
  target_link_libraries(gpr
    ${_gRPC_ALLTARGETS_LIBRARIES}
@@ -47,7 +63,7 @@
  )
  if(_gRPC_PLATFORM_ANDROID)
    target_link_libraries(gpr
-@@ -1929,17 +1918,15 @@
+@@ -1929,17 +1915,15 @@
    PRIVATE
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${_gRPC_ADDRESS_SORTING_INCLUDE_DIR}
@@ -68,7 +84,7 @@
    ${_gRPC_ADDRESS_SORTING_LIBRARIES}
    ${_gRPC_UPB_LIBRARIES}
    ${_gRPC_ALLTARGETS_LIBRARIES}
-@@ -2341,17 +2330,15 @@
+@@ -2341,17 +2325,15 @@
    PRIVATE
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${_gRPC_ADDRESS_SORTING_INCLUDE_DIR}
@@ -89,7 +105,7 @@
    ${_gRPC_ADDRESS_SORTING_LIBRARIES}
    ${_gRPC_UPB_LIBRARIES}
    ${_gRPC_ALLTARGETS_LIBRARIES}
-@@ -3449,16 +3434,14 @@
+@@ -3449,16 +3431,14 @@
    PRIVATE
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${_gRPC_ADDRESS_SORTING_INCLUDE_DIR}
@@ -108,7 +124,7 @@
    ${_gRPC_ADDRESS_SORTING_LIBRARIES}
    ${_gRPC_UPB_LIBRARIES}
    ${_gRPC_ALLTARGETS_LIBRARIES}
-@@ -3797,8 +3780,8 @@
+@@ -3797,8 +3777,8 @@
  )
  target_link_libraries(grpc++
    ${_gRPC_BASELIB_LIBRARIES}
@@ -119,7 +135,7 @@
    ${_gRPC_ALLTARGETS_LIBRARIES}
    grpc
    gpr
-@@ -4127,7 +4110,7 @@
+@@ -4127,7 +4107,7 @@
  )
  target_link_libraries(grpc++_alts
    ${_gRPC_BASELIB_LIBRARIES}
@@ -128,7 +144,7 @@
    ${_gRPC_ALLTARGETS_LIBRARIES}
    grpc++
    gpr
-@@ -4199,10 +4182,10 @@
+@@ -4199,10 +4179,10 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpc++_core_stats
@@ -141,7 +157,7 @@
  )
  
  endif()
-@@ -4248,7 +4231,7 @@
+@@ -4248,7 +4228,7 @@
  )
  target_link_libraries(grpc++_error_details
    ${_gRPC_BASELIB_LIBRARIES}
@@ -150,7 +166,7 @@
    ${_gRPC_ALLTARGETS_LIBRARIES}
    grpc++
  )
-@@ -4321,11 +4304,11 @@
+@@ -4321,11 +4301,11 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpc++_proto_reflection_desc_db
@@ -164,7 +180,7 @@
  )
  
  foreach(_hdr
-@@ -4381,7 +4364,7 @@
+@@ -4381,7 +4361,7 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpc++_reflection
@@ -173,7 +189,7 @@
    ${_gRPC_ALLTARGETS_LIBRARIES}
    grpc++
    grpc
-@@ -4450,9 +4433,9 @@
+@@ -4450,9 +4430,9 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpc++_test_config
@@ -185,7 +201,7 @@
  )
  
  
-@@ -4530,12 +4513,12 @@
+@@ -4530,12 +4510,12 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpc++_test_util
@@ -200,7 +216,7 @@
  )
  
  foreach(_hdr
-@@ -4728,12 +4711,12 @@
+@@ -4728,12 +4708,12 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpc++_test_util_unsecure
@@ -215,7 +231,7 @@
  )
  
  foreach(_hdr
-@@ -4934,7 +4917,7 @@
+@@ -4934,7 +4914,7 @@
  )
  target_link_libraries(grpc++_unsecure
    ${_gRPC_BASELIB_LIBRARIES}
@@ -224,7 +240,7 @@
    ${_gRPC_ALLTARGETS_LIBRARIES}
    gpr
    grpc_unsecure
-@@ -5316,12 +5299,12 @@
+@@ -5316,12 +5296,12 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpc_cli_libs
@@ -239,7 +255,7 @@
  )
  
  foreach(_hdr
-@@ -5378,7 +5361,7 @@
+@@ -5378,7 +5358,7 @@
  )
  target_link_libraries(grpc_plugin_support
    ${_gRPC_PROTOBUF_PROTOC_LIBRARIES}
@@ -248,7 +264,7 @@
    ${_gRPC_ALLTARGETS_LIBRARIES}
  )
  
-@@ -5444,7 +5427,7 @@
+@@ -5444,7 +5424,7 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(grpcpp_channelz
@@ -257,7 +273,7 @@
    ${_gRPC_ALLTARGETS_LIBRARIES}
    grpc++
    grpc
-@@ -5525,14 +5508,14 @@
+@@ -5525,14 +5505,14 @@
      ${_gRPC_PROTO_GENS_DIR}
  )
  target_link_libraries(http2_client_main

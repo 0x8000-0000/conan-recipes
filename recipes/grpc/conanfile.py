@@ -34,6 +34,7 @@ class GrpcConan(ConanFile):
 
     def build_requirements(self):
         self.build_requires("protobuf_compiler/3.11.4@signbit/testing")
+        self.build_requires("grpc_plugin/1.28.1@signbit/testing")
 
     def source(self):
         tools.get(**self.conan_data["sources"][self.version])
@@ -56,6 +57,14 @@ class GrpcConan(ConanFile):
         cmake.definitions["gRPC_INSTALL"] = "ON"
         cmake.definitions["gRPC_INSTALL"] = "ON"
         cmake.definitions["gRPC_USE_PROTO_LITE"] = "OFF"
+        cmake.definitions["gRPC_BUILD_CODEGEN"] = "ON"
+        cmake.definitions["gRPC_BUILD_GRPC_CPP_PLUGIN"] = "OFF"
+        cmake.definitions["gRPC_BUILD_GRPC_CSHARP_PLUGIN"] = "OFF"
+        cmake.definitions["gRPC_BUILD_GRPC_NODE_PLUGIN"] = "OFF"
+        cmake.definitions["gRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN"] = "OFF"
+        cmake.definitions["gRPC_BUILD_GRPC_PHP_PLUGIN"] = "OFF"
+        cmake.definitions["gRPC_BUILD_GRPC_PYTHON_PLUGIN"] = "OFF"
+        cmake.definitions["gRPC_BUILD_GRPC_RUBY_PLUGIN"] = "OFF"
 
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
