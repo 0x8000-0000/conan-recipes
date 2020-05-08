@@ -72,3 +72,15 @@ class GrpcConan(ConanFile):
 
     def package_info(self):
         self.env_info.PATH.append(os.path.join(self.package_folder, "bin"))
+        self.env_info.GRPC_CPP_PLUGIN_BIN = os.path.normpath(
+            os.path.join(self.package_folder, "bin", "grpc_cpp_plugin")
+        )
+        self.env_info.GRPC_PYTHON_PLUGIN_BIN = os.path.normpath(
+            os.path.join(self.package_folder, "bin", "grpc_python_plugin")
+        )
+        self.env_info.GRPC_NODE_PLUGIN_BIN = os.path.normpath(
+            os.path.join(self.package_folder, "bin", "grpc_node_plugin")
+        )
+        self.env_info.GRPC_RUBY_PLUGIN_BIN = os.path.normpath(
+            os.path.join(self.package_folder, "bin", "grpc_ruby_plugin")
+        )
