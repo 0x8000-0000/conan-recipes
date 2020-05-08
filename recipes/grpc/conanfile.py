@@ -33,7 +33,7 @@ class GrpcConan(ConanFile):
         self.requires.add("abseil/20200225.2@signbit/testing")
 
     def build_requirements(self):
-        self.build_requires("protoc_installer/3.11.4@signbit/testing")
+        self.build_requires("protobuf_compiler/3.11.4@signbit/testing")
 
     def source(self):
         tools.get(**self.conan_data["sources"][self.version])
