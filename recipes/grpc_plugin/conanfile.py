@@ -24,13 +24,13 @@ class GrpcConan(ConanFile):
         return "build_subfolder"
 
     def requirements(self):
-        self.requires.add("zlib/1.2.11")
-        self.requires.add("gflags/2.2.2")
-        self.requires.add("openssl/1.1.1e")
-        self.requires.add("libuv/1.34.2")
-        self.requires.add("c-ares/1.15.0")
-        self.requires.add("protobuf/3.11.4")
-        self.requires.add("abseil/20200225.2@signbit/testing")
+        self.requires("zlib/1.2.11")
+        self.requires("gflags/2.2.2")
+        self.requires("openssl/1.1.1e")
+        self.requires("libuv/1.34.2")
+        self.requires("c-ares/1.15.0")
+        self.requires("protobuf/3.11.4")
+        self.requires("abseil/20200225.2")
 
     def build_requirements(self):
         self.build_requires("protobuf_compiler/3.11.4@signbit/testing")

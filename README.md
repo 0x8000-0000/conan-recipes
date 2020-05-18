@@ -17,8 +17,6 @@ Building
 --------
 
    ```shell
-   $ cd recipes/abseil
-   $ conan create . abseil/20200225.2@signbit/testing
    $ cd ../protoc_installer
    $ conan create . protobuf_compiler/3.11.4@signbit/testing
    $ cd ../grpc_plugin
@@ -34,17 +32,6 @@ Testing
 -------
 
    ```shell
-   $ cd tests
-   # abseil
-   $ mkdir abseil.build
-   $ cd abseil.build
-   $ conan install ../abseil
-   $ cmake ../abseil
-   $ cmake --build .
-   $ ./test1
-   dewey                                                                    
-   huey            
-   louie 
    # grpc
    $ cd ../
    $ mkdir greeter_example.build
@@ -66,7 +53,6 @@ License
 
 These scripts have been heavily influenced by the original upstream sources:
 
-   * <https://github.com/abseil/abseil-cpp/blob/master/conanfile.py> licensed under Apache-2.0
    * <https://github.com/bincrafters/conan-protoc_installer> licensed under MIT
    * <https://github.com/inexorgame/conan-grpc> licensed under MIT
 

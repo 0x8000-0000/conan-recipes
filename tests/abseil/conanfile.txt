@@ -1,6 +1,0 @@
-[requires]
-abseil/20200225.2@signbit/testing
-grpc/1.28.1@signbit/testing
-
-[generators]
-cmake
